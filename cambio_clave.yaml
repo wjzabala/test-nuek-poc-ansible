@@ -12,4 +12,7 @@
         password: "{{ nueva_clave | password_hash('sha512') }}"
       debug:
         msg: "La clave del usuario {{ usuario }} ha sido cambiada."
+  
+    - name: Mostrar la nueva clave (solo para fines de prueba)
+      debug:
         msg: "La clave es {{ nueva_clave }}"
