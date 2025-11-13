@@ -11,6 +11,11 @@
       ansible.builtin.user:
         name: "{{ usuario }}"
         password: "{{ 'NuevaClaveSegura123!.' | password_hash('sha512') }}"
+        register: cambio_clave_result
+
+    - name: Mostrar salida del cambio de clave
+      debug:
+        msg: "La salida es {{ cambio_clave_result }}"
 
     - name: Confirmar cambio de clave
       debug:
