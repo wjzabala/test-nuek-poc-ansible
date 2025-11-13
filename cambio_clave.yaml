@@ -1,17 +1,16 @@
 ---
 - name: Cambio de Credenciales
-  hosts: 172.21.200.216
+  hosts: _host
   become: yes
   vars:
-    usuario: "rhormaza"
-    nueva_clave: "NuevaClaveSegura123!"
+    usuario: "_usuario"
 
   
   tasks:
     - name: Cambiar la clave del usuario
       ansible.builtin.user:
         name: "{{ usuario }}"
-        password: "{{ nueva_clave | password_hash('sha512') }}"
+        password: "{{ 'NuevaClaveSegura123!.' | password_hash('sha512') }}"
 
     - name: Confirmar cambio de clave
       debug:
@@ -19,4 +18,4 @@
   
     - name: Mostrar la nueva clave (solo para fines de prueba)
       debug:
-        msg: "La clave es {{ nueva_clave }}"
+        msg: "Clave actualizada para usuario {{ usuario }}"
