@@ -1,6 +1,6 @@
 ---
 - name: Cambio de Credenciales
-  hosts: _host
+  hosts: "{{ _host }}"
   become: yes
   vars:
     usuario: "_usuario"
