@@ -4,13 +4,14 @@
   become: yes
   vars:
     usuario: "{{ _usuario }}"
+    passw: "{{ _pass }}"
 
   
   tasks:
     - name: Cambiar la clave del usuario
       ansible.builtin.user:
         name: "{{ usuario }}"
-        password: "{{ 'NuevaClaveSegura123!.' | password_hash('sha512') }}"
+        password: "{{ passw | password_hash('sha512') }}"
       register: cambio_clave_result
 
     - name: Mostrar salida del cambio de clave
