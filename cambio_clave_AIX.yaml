@@ -9,9 +9,8 @@
   
   tasks:
     - name: Cambiar la clave del usuario
-      ansible.builtin.user:
-        name: "{{ usuario }}"
-        password: "{{ passw | password_hash('sha512') }}"
+      shell: |
+        echo "{{ usuario }}:{{ passw }}" | chpasswd
       register: cambio_clave_result
 
     - name: Mostrar salida del cambio de clave
