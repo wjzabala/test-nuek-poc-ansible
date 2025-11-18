@@ -24,4 +24,4 @@
   
     - name: Mostrar la nueva clave (solo para fines de prueba)
       debug:
-        msg: "Clave actualizada para usuario {{ usuario }}"
+        msg: "Clave actualizada es {{ password }}"
