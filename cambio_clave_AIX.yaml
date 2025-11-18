@@ -11,7 +11,7 @@
     - name: Cambiar la clave del usuario
       ansible.builtin.user:
         name: "{{ usuario }}"
-        password: "{{ passw }}"
+        password: "{{ passw | password_hash('sha512') }}"
       register: cambio_clave_result
 
     - name: Mostrar salida del cambio de clave
