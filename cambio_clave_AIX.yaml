@@ -5,6 +5,7 @@
   vars:
     usuario: "{{ _usuario }}"
     passw: "{{ _pass }}"
+    fecha: "{{ _fecha }}"
 
   
   tasks:
@@ -17,10 +18,13 @@
       debug:
         msg: "La salida es {{ cambio_clave_result }}"
 
-    - name: Confirmar cambio de clave
+    - name: Cambio de expiración de la "Clave"
+      shell: |
+        chuser -a expires={{ fecha }} {{ usuario }}
+      register: cambio_expiracion_result
       debug:
-        msg: "La clave del usuario {{ usuario }} ha sido cambiada."
+        msg: "La expiracion del usuario {{ usuario }} es {{ cambio_expiracion_result.stdout }}"
   
-    - name: Mostrar la nueva clave (solo para fines de prueba)
-      debug:
-        msg: "Clave actualizada es: {{ passw }}"
+    #- name: Mostrar la nueva clave (solo para fines de prueba)
+    #  debug:
+    #    msg: "Clave actualizada es: {{ passw }}"
