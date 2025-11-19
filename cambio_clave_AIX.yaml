@@ -20,7 +20,7 @@
 
     - name: Cambio de expiración de la "Clave"
       shell: |
-        chuser -a expires={{ fecha }} {{ usuario }}
+        chuser expires={{ fecha }} {{ usuario }}
       register: cambio_expiracion_result
 
     - name: Mostrar salida del cambio de expiracion
