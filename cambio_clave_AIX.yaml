@@ -25,7 +25,7 @@
 
     - name: Mostrar salida del cambio de expiracion
       debug:
-        msg: "La expiracion del usuario {{ usuario }} es {{ cambio_expiracion_result }}"
+        msg: "La expiracion del usuario {{ usuario }} es {{ cambio_expiracion_result.stdout }}"
   
     #- name: Mostrar la nueva clave (solo para fines de prueba)
     #  debug:
