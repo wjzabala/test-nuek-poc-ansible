@@ -22,10 +22,10 @@
       shell: |
         chuser -a expires={{ fecha }} {{ usuario }}
       register: cambio_expiracion_result
-      
+
     - name: Mostrar salida del cambio de expiracion
       debug:
-        msg: "La expiracion del usuario {{ usuario }} es {{ cambio_expiracion_result.stdout }}"
+        msg: "La expiracion del usuario {{ usuario }} es {{ cambio_expiracion_result }}"
   
     #- name: Mostrar la nueva clave (solo para fines de prueba)
     #  debug:
