@@ -9,12 +9,12 @@
     grupo2: "{{ _grupo2 }}"
     id_usuario: "{{ _id_usuario }}"
     comment: "{{ _comment }}"
-    home_dir: "{{ _home_dir }}"
+    #home_dir: "{{ _home_dir }}"
 
   tasks:
     - name: Crear el usuario en AIX
       shell: |
-        mkuser id={{ id_usuario }} pgrp={{ grupo }} groups={{ grupo2 }} home=/home/{{ home_dir }} comment="{{ comment }}" {{ usuario }}
+        mkuser id={{ id_usuario }} pgrp={{ grupo }} groups={{ grupo2 }} home=/home/{{ usuario }} comment="{{ comment }}" {{ usuario }}
       register: crear_usuario_result
 
     - name: Establecer la contraseña del usuario
