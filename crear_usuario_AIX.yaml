@@ -11,11 +11,23 @@
     comment: "{{ _comment }}"
     #home_dir: "{{ _home_dir }}"
 
-  tasks:
-    - name: Crear el usuario en AIX
+    tasks:
+    - name: Verificar si el usuario ya existe
+      shell: lsuser {{ usuario }}
+      register: usuario_existe
+      failed_when: false
+      changed_when: false
+    
+    - name: Mostrar mensaje si el usuario ya existe
+      debug:
+        msg: "El usuario {{ usuario }} ya existe en el sistema."
+      when: usuario_existe.rc == 0
+
+    - name: Crear usuario si no existe en AIX
       shell: |
         mkuser id={{ id_usuario }} pgrp={{ grupo }} groups={{ grupo2 }} home=/home/{{ usuario }} gecos="{{ comment }}" {{ usuario }}
       register: crear_usuario_result
+      when: usuario_existe.rc != 0
 
     - name: Establecer la contraseña del usuario
       shell: |
@@ -24,6 +36,7 @@
         echo "${clave}"
       register: establecer_contrasena_result
       no_log: true
+      when: usuario_existe.rc != 0
 
     - name: Mostrar salida de la creación del usuario y contraseña
       debug: 
@@ -33,3 +46,4 @@
           - "Grupo primario: {{ grupo }}"
           - "Grupos secundarios: {{ grupo2 }}"
           - "Contraseña generada: ...{{ establecer_contrasena_result.stdout }}"
+      when: usuario_existe.rc != 0
