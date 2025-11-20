@@ -4,25 +4,38 @@
   become: yes
   vars:
     usuario: "{{ _usuario }}"
-    #passw: "{{ _pass }}"
     grupo: "{{ _grupo }}"
     grupo2: "{{ _grupo2 }}"
     id_usuario: "{{ _id_usuario }}"
     comment: "{{ _comment }}"
-    #home_dir: "{{ _home_dir }}"
-
-    tasks:
-    - name: Verificar si el usuario ya existe
-      shell: lsuser {{ usuario }}
-      register: usuario_existe
-      failed_when: false
-      changed_when: false
     
-    - name: Mostrar mensaje si el usuario ya existe
+  tasks:
+    - name: Verificar si el usuario existe en AIX
+      shell: |
+        lsuser {{ usuario }}
+      register: usuario_existe
+      changed_when: false
+      failed_when: false
+
+    - name: Obtener información del usuario si existe
       debug:
         msg: "El usuario {{ usuario }} ya existe en el sistema."
       when: usuario_existe.rc == 0
 
+    - name: Mostrar información del usuario existente
+      debug:
+        msg: 
+          - "El usuario {{ usuario }} ya existe"
+          - "Información: {{ usuario_uid_info.stdout }}"
+      when: usuario_existe.rc == 0 and usuario_uid_info.stdout is defined
+
+    - name: Obtener el UID del usuario si existe
+      shell: |
+        id {{ usuario }}
+      register: usuario_uid_info
+      ignore_errors: yes
+      when: usuario_existe.rc == 0
+    
     - name: Crear usuario si no existe en AIX
       shell: |
         mkuser id={{ id_usuario }} pgrp={{ grupo }} groups={{ grupo2 }} home=/home/{{ usuario }} gecos="{{ comment }}" {{ usuario }}
@@ -31,8 +44,8 @@
 
     - name: Establecer la contraseña del usuario
       shell: |
-        clave=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 14) &&
-        echo "{{ usuario }}:{{ clave }}" | chpasswd
+        clave=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 14)
+        echo "{{ usuario }}:${clave}" | chpasswd
         echo "${clave}"
       register: establecer_contrasena_result
       no_log: true
@@ -45,5 +58,5 @@
           - "UID: {{ id_usuario }}"
           - "Grupo primario: {{ grupo }}"
           - "Grupos secundarios: {{ grupo2 }}"
-          - "Contraseña generada: ...{{ establecer_contrasena_result.stdout }}"
+          - "Contraseña generada: {{ establecer_contrasena_result.stdout }}"
       when: usuario_existe.rc != 0
