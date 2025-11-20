@@ -21,8 +21,15 @@
       shell: |
         clave=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 14) &&
         echo "{{ usuario }}:{{ clave }}" | chpasswd
+        echo "${clave}"
       register: establecer_contrasena_result
+      no_log: true
 
     - name: Mostrar salida de la creación del usuario y contraseña
-      debug:
-        msg: "Creación usuario resultado: {{ crear_usuario_result }}, Establecer contraseña resultado: {{ establecer_contrasena_result }}"
+      debug: 
+        msg:
+          - "Usuario {{ usuario }} creado exitosamente"
+          - "UID: {{ id_usuario }}"
+          - "Grupo primario: {{ grupo }}"
+          - "Grupos secundarios: {{ grupo2 }}"
+          - "Contraseña generada: ...{{ establecer_contrasena_result.stdout }}"
