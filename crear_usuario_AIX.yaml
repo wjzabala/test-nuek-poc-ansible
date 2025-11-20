@@ -14,7 +14,7 @@
   tasks:
     - name: Crear el usuario en AIX
       shell: |
-        mkuser id={{ id_usuario }} pgrp={{ grupo }} groups={{ grupo2 }} home=/home/{{ usuario }} comment="{{ comment }}" {{ usuario }}
+        mkuser id={{ id_usuario }} pgrp={{ grupo }} groups={{ grupo2 }} home=/home/{{ usuario }} gecos="{{ comment }}" {{ usuario }}
       register: crear_usuario_result
 
     - name: Establecer la contraseña del usuario
