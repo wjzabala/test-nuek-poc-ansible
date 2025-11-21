@@ -6,6 +6,7 @@
     usuario: "{{ _usuario }}"
     passw: "{{ _pass }}"
     fecha: "{{ _fecha }}"
+    accion: "{{ _accion }}"  # Nueva variable: 'clave', 'fecha', o 'ambos'
 
   
   tasks:
@@ -13,20 +14,20 @@
       shell: |
         echo "{{ usuario }}:{{ passw }}" | chpasswd
       register: cambio_clave_result
+      when: accion == 'clave' or accion == 'ambos'
 
     - name: Mostrar salida del cambio de clave
       debug:
         msg: "La salida es {{ cambio_clave_result }}"
+      when: accion == 'clave' or accion == 'ambos'
 
     - name: Cambio de expiración de la "Clave"
       shell: |
         chuser expires={{ fecha }} {{ usuario }}
       register: cambio_expiracion_result
+      when: accion == 'fecha' or accion == 'ambos'
 
     - name: Mostrar salida del cambio de expiracion
       debug:
         msg: "La expiracion del usuario {{ usuario }} es {{ cambio_expiracion_result.stdout }}"
-  
-    #- name: Mostrar la nueva clave (solo para fines de prueba)
-    #  debug:
-    #    msg: "Clave actualizada es: {{ passw }}"
+      when: accion == 'fecha' or accion == 'ambos'

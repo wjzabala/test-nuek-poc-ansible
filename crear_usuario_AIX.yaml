@@ -22,6 +22,13 @@
         msg: "El usuario {{ usuario }} ya existe en el sistema."
       when: usuario_existe.rc == 0
 
+    - name: Obtener el UID del usuario si existe
+      shell: |
+        grep -w {{ _id_usuario }} /etc/passwd | cut -d: -f3
+      register: usuario_uid_info
+      changed_when: false
+      failed_when: false
+
     - name: Mostrar información del usuario existente
       debug:
         msg: 
@@ -29,13 +36,7 @@
           - "Información: {{ usuario_uid_info.stdout }}"
       when: usuario_existe.rc == 0 and usuario_uid_info.stdout is defined
 
-    - name: Obtener el UID del usuario si existe
-      shell: |
-        id {{ usuario }}
-      register: usuario_uid_info
-      ignore_errors: yes
-      when: usuario_existe.rc == 0
-    
+   
     - name: Crear usuario si no existe en AIX
       shell: |
         mkuser id={{ id_usuario }} pgrp={{ grupo }} groups={{ grupo2 }} home=/home/{{ usuario }} gecos="{{ comment }}" {{ usuario }}
