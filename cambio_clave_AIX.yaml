@@ -9,11 +9,16 @@
 
   
   tasks:
+    - name: Generar contraseña aleatoria
+      shell: |
+        < /dev/urandom tr -dc 'A-Za-z0-9' | head -c 14
+      register: clave_generada
+      no_log: true
+      when: accion == 'clave' or accion == 'ambos'
+      
     - name: Cambiar la clave del usuario
       shell: |
-        clave=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 14)
-        echo "{{ usuario }}:${clave}" | chpasswd
-      register: cambio_clave_result
+        echo "{{ usuario }}:{{ clave_generada.stdout }}" | chpasswd
       no_log: true
       when: accion == 'clave' or accion == 'ambos'
 
@@ -25,12 +30,10 @@
 
     - name: Mostrar salida de los cambios de fecha
       debug:
-        msg: 
-          - "La expiracion del usuario: {{ usuario }} es {{ fecha }}"
-      when: accion == 'fecha'
+        msg: "La expiración del usuario {{ usuario }} es {{ fecha }}"
+      when: accion == 'fecha' or accion == 'ambos'
 
     - name: Mostrar salida de los cambios de clave
       debug:
-        msg: 
-          - "La clave del usuario: {{ cambio_clave_result.stdout }}"
-      when: accion == 'clave'
+        msg: "La nueva clave del usuario {{ usuario }} es: {{ clave_generada.stdout }}"
+      when: accion == 'clave' or accion == 'ambos'
