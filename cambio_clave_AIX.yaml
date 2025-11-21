@@ -4,7 +4,6 @@
   become: yes
   vars:
     usuario: "{{ _usuario }}"
-    passw: "{{ _pass }}"
     fecha: "{{ _fecha }}"
     accion: "{{ _accion }}"  # Nueva variable: 'clave', 'fecha', o 'ambos'
 
@@ -12,7 +11,8 @@
   tasks:
     - name: Cambiar la clave del usuario
       shell: |
-        echo "{{ usuario }}:{{ passw }}" | chpasswd
+        clave=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 14)
+        echo "{{ usuario }}:${clave}" | chpasswd
       register: cambio_clave_result
       when: accion == 'clave' or accion == 'ambos'
 
@@ -27,7 +27,9 @@
       register: cambio_expiracion_result
       when: accion == 'fecha' or accion == 'ambos'
 
-    - name: Mostrar salida del cambio de expiracion
+    - name: Mostrar salida de los cambios
       debug:
-        msg: "La expiracion del usuario {{ usuario }} es {{ cambio_expiracion_result.stdout }}"
-      when: accion == 'fecha' or accion == 'ambos'
+        msg: 
+        - "La expiracion del usuario {{ usuario }} es {{ fecha }}"
+        - "La clave del usuario {{ cambio_clave_result.stdout }}"
+      when: accion == 'clave' or accion == 'fecha' or accion == 'ambos'
