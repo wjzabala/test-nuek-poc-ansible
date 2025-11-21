@@ -26,6 +26,6 @@
     - name: Mostrar salida de los cambios
       debug:
         msg: 
-          - "La expiracion del usuario {{ usuario }} es {{ fecha }}"
-          - "La clave del usuario {{ cambio_clave_result.stdout }}"
+          - "La expiracion del usuario: {{ usuario }} es {{ fecha }}"
+          - "La clave del usuario: {{ cambio_clave_result.stdout }}"
       when: accion == 'clave' or accion == 'fecha' or accion == 'ambos'
