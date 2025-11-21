@@ -23,9 +23,14 @@
       register: cambio_expiracion_result
       when: accion == 'fecha' or accion == 'ambos'
 
-    - name: Mostrar salida de los cambios
+    - name: Mostrar salida de los cambios de fecha
       debug:
         msg: 
           - "La expiracion del usuario: {{ usuario }} es {{ fecha }}"
+      when: accion == 'fecha'
+
+    - name: Mostrar salida de los cambios de clave
+      debug:
+        msg: 
           - "La clave del usuario: {{ cambio_clave_result.stdout }}"
-      when: accion == 'clave' or accion == 'fecha' or accion == 'ambos'
+      when: accion == 'clave'
