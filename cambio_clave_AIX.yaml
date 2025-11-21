@@ -14,11 +14,7 @@
         clave=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 14)
         echo "{{ usuario }}:${clave}" | chpasswd
       register: cambio_clave_result
-      when: accion == 'clave' or accion == 'ambos'
-
-    - name: Mostrar salida del cambio de clave
-      debug:
-        msg: "La salida es {{ cambio_clave_result }}"
+      no_log: true
       when: accion == 'clave' or accion == 'ambos'
 
     - name: Cambio de expiración de la "Clave"
@@ -30,6 +26,6 @@
     - name: Mostrar salida de los cambios
       debug:
         msg: 
-        - "La expiracion del usuario {{ usuario }} es {{ fecha }}"
-        - "La clave del usuario {{ cambio_clave_result.stdout }}"
+          - "La expiracion del usuario {{ usuario }} es {{ fecha }}"
+          - "La clave del usuario {{ cambio_clave_result.stdout }}"
       when: accion == 'clave' or accion == 'fecha' or accion == 'ambos'
